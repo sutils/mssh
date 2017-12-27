@@ -40,8 +40,8 @@ for line in $(cat $1); do
 done
 
 #copy the ssh config file to user .ssh/config
-echo "=>copy ssh config to ~/.ssh/config"
-cp -f $tmp_dir/ssh_conf ~/.ssh/config
+echo "=>append ssh config to ~/.ssh/config"
+cat $tmp_dir/ssh_conf >> ~/.ssh/config
 chmod 600 ~/.ssh/*
 chmod 700 ~/.ssh
 

@@ -1,0 +1,10 @@
+windows:
+  - name: MSSH
+    layout: layout-3-2
+    root: ~
+    panes:
+      - ssh loc.m "tail -f /var/log/mongodb/mongod.log"
+      - ssh loc.m "tail -f /var/log/mariadb/mariadb.log"
+      - ssh loc.m 
+      - echo hell
+      - echo starting

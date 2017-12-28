@@ -6,4 +6,4 @@ if [ $# -lt 1 ];then
     echo "        mssh-userdel xxx"
     exit 1
 fi
-sudo userdel -R $1
+sudo userdel -r $1

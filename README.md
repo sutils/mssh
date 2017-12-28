@@ -16,6 +16,8 @@ the script tool to create ssh jumper server.
 cd /srv/mssh
 ln -s `pwd`/mssh-conf.sh /usr/bin/mssh-conf
 ln -s `pwd`/mssh-passwd.sh /usr/bin/mssh-passwd
+ln -s `pwd`/mssh-useradd.sh /usr/bin/mssh-useradd
+ln -s `pwd`/mssh-userdel.sh /usr/bin/mssh-userdel
 ```
 
 * add mssh group and add group to sudoer(required only when deploy jumper server)
@@ -24,8 +26,20 @@ ln -s `pwd`/mssh-passwd.sh /usr/bin/mssh-passwd
 # create group
 groupadd mssh
 
-# add group to /etc/sudoers
+# add ssh access group to /etc/sudoers
 echo '%mssh ALL=(ALL) NOPASSWD: '`which ssh` >> /etc/sudoers
+```
+
+* add manager group and add group to sudoer(required only when you want grant user manager access to other but root)
+
+```.sh
+# create group
+groupadd manager
+
+# add user manager group to /etc/sudoers
+echo '%manager ALL=(ALL) NOPASSWD: '`which useradd` >> /etc/sudoers
+echo '%manager ALL=(ALL) NOPASSWD: '`which userdel` >> /etc/sudoers
+
 ```
 
 ## Usage
@@ -61,16 +75,23 @@ run ssh command on root to test the auto login
 ssh root@loc.m
 ```
 
-#### 4.Add user
-
-add other user to access the auto login.
+### Add manager user
 
 ```.sh
-useradd -g mssh test1
-passwd test1
+mssh-useradd manager mgr1 123
 ```
 
-#### 5.Use jumper server
+### Use jumper server
+
+#### 1.Add user
+
+add other user to access the auto login by root or manager user(add user to manager group)
+
+```.sh
+mssh-useradd mssh test1 123
+```
+
+#### 2.Use jumper server
 
 * login to jumper server by `ssh test1@xxx` (password required)
 * login to target server by `ssh root@loc.m` (not password)

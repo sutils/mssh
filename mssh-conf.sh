@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ $# -lt 1 ];then
     echo "MSSH version 1.0.0"
@@ -9,10 +10,15 @@ fi
 
 # setup
 echo "=>creating all by config:"$1
-tmp_dir=tmp/mssh
+tmp_dir=tmp
 rm -rf $tmp_dir
 mkdir -p $tmp_dir
 touch $tmp_dir/ssh_conf
+
+script="mkdir -p .ssh; chmod 700 .ssh; cat temp_rsa.pub >> .ssh/authorized_keys; chmod 640 .ssh/authorized_keys; rm -f temp_rsa.pub"
+if [ "$2" == "overwrite" ];then
+    script="mkdir -p .ssh; chmod 700 .ssh; cat temp_rsa.pub > .ssh/authorized_keys; chmod 640 .ssh/authorized_keys; rm -f temp_rsa.pub"
+fi
 
 # create rsa key and upload to remote server
 for line in $(cat $1); do
@@ -24,11 +30,11 @@ for line in $(cat $1); do
     echo "=>creating auto login key for "$host_addr
     ssh-keygen -t rsa  -P '' -f $tmp_dir/$host_addr"_rsa"
     if [ "$host_port" == "" ];then
-        sshpass -p "$host_pass" scp $tmp_dir/$host_addr"_rsa.pub" $host_user@$host_addr:/root/.ssh/authorized_keys
-        sshpass -p "$host_pass" ssh $host_user@$host_addr "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+        sshpass -p "$host_pass" scp -o StrictHostKeyChecking=no $tmp_dir/$host_addr"_rsa.pub" $host_user@$host_addr:~/temp_rsa.pub
+        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "$script"
     else
-        sshpass -p "$host_pass" scp -P $host_port $tmp_dir/$host_addr"_rsa.pub" $host_user@$host_addr:/root/.ssh/authorized_keys
-        sshpass -p "$host_pass" ssh -p $host_port $host_user@$host_addr "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+        sshpass -p "$host_pass" scp -o StrictHostKeyChecking=no -P $host_port $tmp_dir/$host_addr"_rsa.pub" $host_user@$host_addr:~/temp_rsa.pub
+        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "$script"
     fi
     cp -f $tmp_dir/$host_addr"_rsa" ~/.ssh/
     cp -f $tmp_dir/$host_addr"_rsa.pub" ~/.ssh/

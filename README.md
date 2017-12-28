@@ -15,7 +15,6 @@ the script tool to create ssh jumper server.
 ```.sh
 cd /srv/mssh
 ln -s `pwd`/mssh-conf.sh /usr/bin/mssh-conf
-ln -s `pwd`/mssh-adduser.sh /usr/bin/mssh-adduser
 ```
 
 * add mssh group and add group to sudoer(required only when deploy jumper server)
@@ -25,7 +24,7 @@ ln -s `pwd`/mssh-adduser.sh /usr/bin/mssh-adduser
 groupadd mssh
 
 # add group to /etc/sudoers
-echo '%mssh ALL=(ALL) NOPASSWD: '`whereis ssh` >> /etc/sudoers
+echo '%mssh ALL=(ALL) NOPASSWD: '`which ssh` >> /etc/sudoers
 ```
 
 ## Usage
@@ -66,7 +65,8 @@ ssh root@loc.m
 add other user to access the auto login.
 
 ```.sh
-mssh-adduser test1
+useradd -g mssh test1
+passwd test1
 ```
 
 #### 5.Use jumper server

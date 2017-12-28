@@ -4,13 +4,13 @@ the script tool to create ssh jumper server.
 
 ## Dependences
 
-* openssh: ssh-keygen/scp/ssh
+* openssl: ssh-keygen/scp/ssh/openssl
 * sshpass
 
 ## Install
 
 * download the mssh and copy to /srv
-* execute below command(optional)
+* execute below command(optional, it can be used by absolute path)
 
 ```.sh
 cd /srv/mssh
@@ -18,6 +18,7 @@ ln -s `pwd`/mssh-conf.sh /usr/bin/mssh-conf
 ln -s `pwd`/mssh-passwd.sh /usr/bin/mssh-passwd
 ln -s `pwd`/mssh-useradd.sh /usr/bin/mssh-useradd
 ln -s `pwd`/mssh-userdel.sh /usr/bin/mssh-userdel
+ln -s `pwd`/mssh.sh /usr/bin/mssh
 ```
 
 * add mssh group and add group to sudoer(required only when deploy jumper server)
@@ -81,9 +82,7 @@ ssh root@loc.m
 mssh-useradd manager mgr1 123
 ```
 
-### Use jumper server
-
-#### 1.Add user
+### Add normal user
 
 add other user to access the auto login by root or manager user(add user to manager group)
 
@@ -91,14 +90,15 @@ add other user to access the auto login by root or manager user(add user to mana
 mssh-useradd mssh test1 123
 ```
 
-#### 2.Use jumper server
+### Use jumper server
 
 * login to jumper server by `ssh test1@xxx` (password required)
-* login to target server by `ssh root@loc.m` (not password)
+* login to target server by `mssh loc.m` (not password)
 
 ### Configure local user auto login to multi server
 
-follow `Configure Jumper Server` step 1 and step 2 and run the command on login user (not root if it is not using)
+* follow `Configure Jumper Server` step 1 and step 2 and run the command on login user (not root if it is not using)
+* using `ssh host` to login
 
 ### Change all host password
 

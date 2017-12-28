@@ -40,7 +40,7 @@ for line in $(cat $1); do
     cp -f $tmp_dir/$host_addr"_rsa.pub" ~/.ssh/
     echo "Host "$host_addr >> $tmp_dir/ssh_conf
     echo "  IdentityFile ~/.ssh/"$host_addr"_rsa" >> $tmp_dir/ssh_conf
-    echo "  User root" >> $tmp_dir/ssh_conf
+    echo "  User $host_user" >> $tmp_dir/ssh_conf
     echo ""
     echo ""
 done

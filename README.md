@@ -15,6 +15,7 @@ the script tool to create ssh jumper server.
 ```.sh
 cd /srv/mssh
 ln -s `pwd`/mssh-conf.sh /usr/bin/mssh-conf
+ln -s `pwd`/mssh-passwd.sh /usr/bin/mssh-passwd
 ```
 
 * add mssh group and add group to sudoer(required only when deploy jumper server)
@@ -77,3 +78,11 @@ passwd test1
 ### Configure local user auto login to multi server
 
 follow `Configure Jumper Server` step 1 and step 2 and run the command on login user (not root if it is not using)
+
+### Change all host password
+
+using the same configure file of jumper server
+
+```.sh
+mssh-passwd /root/hosts.txt xxx
+```

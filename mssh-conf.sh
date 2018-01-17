@@ -22,12 +22,19 @@ fi
 
 # create rsa key and upload to remote server
 for line in $(cat $1); do
+    IFS='#' read -r -a real_line <<< "$line"
+    line="${real_line[0]}"
+    line="$(set -f; echo $line)"
+    if [ "$line" == "" ];then
+        continue
+    fi
     IFS=',' read -r -a host_conf <<< "$line"
     host_user="${host_conf[0]}"
     host_pass="${host_conf[1]}"
     host_addr="${host_conf[2]}"
     host_port="${host_conf[3]}"
-    echo "=>creating auto login key for "$host_addr
+    echo "=>creating auto login key for "$host_addr":"$host_port
+    rm -f $tmp_dir/$host_addr"_rsa"
     ssh-keygen -t rsa  -P '' -f $tmp_dir/$host_addr"_rsa"
     if [ "$host_port" == "" ];then
         sshpass -p "$host_pass" scp -o StrictHostKeyChecking=no $tmp_dir/$host_addr"_rsa.pub" $host_user@$host_addr:~/temp_rsa.pub

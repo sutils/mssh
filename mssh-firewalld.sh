@@ -10,6 +10,12 @@ fi
 
 # change all password to new
 for line in $(cat $1); do
+    IFS='#' read -r -a real_line <<< "$line"
+    line="${real_line[0]}"
+    line="$(set -f; echo $line)"
+    if [ "$line" == "" ];then
+        continue
+    fi
     IFS=',' read -r -a host_conf <<< "$line"
     host_user="${host_conf[0]}"
     host_pass="${host_conf[1]}"

@@ -3,7 +3,7 @@ set -e
 
 if [ $# -lt 2 ];then
     echo "MSSH version 1.0.0"
-    echo "Usage:  mssh-cmds <configure file> <command>"
+    echo "Usage:  mssh-cmds <configure file> <command> [save path]"
     echo "        mssh-cmds test-hosts.txt 'echo abc'"
     exit 1
 fi
@@ -24,9 +24,17 @@ for line in $(cat $1); do
     script=$2
     echo "=>run command on "$host_addr
     if [ "$host_port" == "" ];then
-        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "bash -c $'$script'" $3
+        if [ "$3" == "" ];then
+            sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "bash -c $'$script'"
+        else
+            sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "bash -c $'$script'" >$3/$host_addr.txt
+        fi
     else
-        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "bash -c $'$script'" $3
+        if [ "$3" == "" ];then
+            sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "bash -c $'$script'"
+        else
+            sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "bash -c $'$script'" >$3/$host_addr.txt
+        fi
     fi
 done
 echo "all done..."

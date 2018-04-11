@@ -24,9 +24,9 @@ for line in $(cat $1); do
     script=$2
     echo "=>run command on "$host_addr
     if [ "$host_port" == "" ];then
-        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "bash -c $'$script'"
+        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no $host_user@$host_addr "bash -c $'$script'" $3
     else
-        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "bash -c $'$script'"
+        sshpass -p "$host_pass" ssh -o StrictHostKeyChecking=no -p $host_port $host_user@$host_addr "bash -c $'$script'" $3
     fi
 done
 echo "all done..."
